@@ -1,6 +1,6 @@
 --[[
 used:
-local Notifications = loadstring(game:HttpGet(""))()
+local Notifications = loadstring(game:HttpGet("https://raw.githubusercontent.com/Backlostunking/ScriptStarOZX/refs/heads/main/XKMNotificationZ.Lua"))()
 
 Notifications.Notify({
     Title = "🔥 Welcome!",
@@ -10,7 +10,7 @@ Notifications.Notify({
 
 Notifications.Notify({
     Title = "Info",
-    Description = "You can now stack up to 6 notifications!",
+    Description = "Players",
     Duration = 5
 })
 --]]
