@@ -1,6 +1,6 @@
 --[[
 used it!
-local Notifications = loadstring(game:HttpGet("https://raw.githubusercontent.com/Backlostunking/ScriptStarOZX/refs/heads/main/XXX.Lua"))()
+local Notifications = loadstring(game:HttpGet("https://raw.githubusercontent.com/Backlostunking/ScriptStarOZX/refs/heads/main/Notification%5B%5DStarlightM.Lua"))()
 
 Notifications.Notify({
     Text = "🔥 Epic Notification!",
