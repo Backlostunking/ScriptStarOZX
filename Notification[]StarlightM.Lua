@@ -1,7 +1,17 @@
 --[[
 used it!
+local Notifications = loadstring(game:HttpGet("https://raw.githubusercontent.com/Backlostunking/ScriptStarOZX/refs/heads/main/XXX.Lua"))()
 
+Notifications.Notify({
+    Text = "🔥 Epic Notification!",
+    Duration = 5,
+    ImageId = "123456789" -- Replace with your ImageId (optional)
+})
 
+Notifications.Notify({
+    Text = "🔥 Smooth Animations!",
+    Duration = 4
+})
 --]]
 -- Notifications Library
 local Notifications = {}
