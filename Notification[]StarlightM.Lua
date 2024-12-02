@@ -13,20 +13,16 @@ Notifications.Notify({
     Duration = 4
 })
 --]]
--- Notifications Library
-local Notifications = {}
-
 -- Services
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
--- Local Player
 local Player = Players.LocalPlayer
 
 -- Create ScreenGui
 local NotifGui = Instance.new("ScreenGui")
-NotifGui.Name = "EpicNotifications"
+NotifGui.Name = "GradientTextNotifications"
 NotifGui.IgnoreGuiInset = true
 NotifGui.Parent = RunService:IsStudio() and Player.PlayerGui or game:GetService("CoreGui")
 
@@ -34,46 +30,49 @@ NotifGui.Parent = RunService:IsStudio() and Player.PlayerGui or game:GetService(
 local Container = Instance.new("Frame")
 Container.Name = "NotificationContainer"
 Container.AnchorPoint = Vector2.new(1, 1)
-Container.Position = UDim2.new(0.98, 0, 0.85, 0) -- Slightly higher for stacking
+Container.Position = UDim2.new(1, -20, 0.85, 0) -- Bottom-right corner
 Container.Size = UDim2.new(0.3, 0, 0.7, 0) -- Max width 30%, height 70%
 Container.BackgroundTransparency = 1
 Container.ClipsDescendants = true
 Container.Parent = NotifGui
 
--- UIListLayout for Automatic Stacking
+-- UIListLayout for Automatic Positioning
 local ListLayout = Instance.new("UIListLayout")
 ListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 ListLayout.Padding = UDim.new(0, 10)
 ListLayout.Parent = Container
 
+-- Library Table
+local Notifications = {}
+
 -- Constants
-local TweenTime = 0.3
-local TweenStyle = Enum.EasingStyle.Quad
+local TweenTime = 0.5
+local TweenStyle = Enum.EasingStyle.Quint
 local TweenDirection = Enum.EasingDirection.Out
-local NotificationsList = {}
+local NotificationQueue = {}
 
 -- Function to Create Notification
-local function CreateNotification(Text, Duration, ImageId)
+function Notifications:CreateNotification(Properties)
     -- Notification Frame
     local Frame = Instance.new("Frame")
     Frame.Size = UDim2.new(1, -20, 0, 60) -- Full width with padding, fixed height
     Frame.BackgroundTransparency = 0
-    Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Dark base color
-    Frame.LayoutOrder = #NotificationsList + 1
+    Frame.LayoutOrder = #NotificationQueue + 1
+    Frame.Position = UDim2.new(2, 0, 0, 0) -- Start off-screen to the right
     Frame.ClipsDescendants = true
     Frame.Parent = Container
 
     -- Gradient Background
     local Gradient = Instance.new("UIGradient")
     Gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 30, 30)), -- Dark
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(20, 20, 20)), -- Dark
         ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 0, 0)), -- Red
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(30, 30, 30)) -- Dark
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(20, 20, 20)) -- Dark
     })
     Gradient.Rotation = 90
     Gradient.Parent = Frame
 
-    -- Animate Gradient Rotation
+    -- Animate Gradient
     task.spawn(function()
         while Frame.Parent do
             for i = 0, 360, 1 do
@@ -88,32 +87,32 @@ local function CreateNotification(Text, Duration, ImageId)
     Corner.CornerRadius = UDim.new(0, 12)
     Corner.Parent = Frame
 
-    -- Stroke Outline
+    -- Stroke
     local Stroke = Instance.new("UIStroke")
     Stroke.Thickness = 2
-    Stroke.Color = Color3.fromRGB(255, 255, 255) -- White stroke
+    Stroke.Color = Color3.fromRGB(255, 255, 255) -- White outline
     Stroke.Parent = Frame
 
     -- Optional Image
-    if ImageId then
+    if Properties.ImageId then
         local Image = Instance.new("ImageLabel", Frame)
         Image.Size = UDim2.new(0, 50, 0, 50)
         Image.Position = UDim2.new(0, 5, 0.5, 0)
         Image.AnchorPoint = Vector2.new(0, 0.5)
         Image.BackgroundTransparency = 1
-        Image.Image = "rbxassetid://" .. ImageId
+        Image.Image = "rbxassetid://" .. Properties.ImageId
     end
 
     -- Text Label
     local TextLabel = Instance.new("TextLabel")
-    TextLabel.Text = Text
+    TextLabel.Text = Properties.Text or "Notification"
     TextLabel.Font = Enum.Font.GothamBold
     TextLabel.TextSize = 16
-    TextLabel.TextTransparency = 0
-    TextLabel.TextStrokeTransparency = 0.8
+    TextLabel.TextTransparency = 0 -- Initially fully visible
+    TextLabel.TextStrokeTransparency = 0.8 -- Slight text stroke
     TextLabel.BackgroundTransparency = 1
-    TextLabel.Size = UDim2.new(1, ImageId and -70 or -20, 1, 0) -- Adjust for image if present
-    TextLabel.Position = UDim2.new(ImageId and 0.18 or 0.05, 0, 0, 0) -- Offset for image
+    TextLabel.Size = UDim2.new(1, Properties.ImageId and -70 or -20, 1, 0) -- Adjust for image if present
+    TextLabel.Position = UDim2.new(Properties.ImageId and 0.18 or 0.05, 0, 0, 0) -- Offset for image
     TextLabel.TextXAlignment = Enum.TextXAlignment.Left
     TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
     TextLabel.Parent = Frame
@@ -122,41 +121,37 @@ local function CreateNotification(Text, Duration, ImageId)
 end
 
 -- Animate Notification
-local function AnimateNotification(Frame, TextLabel, Duration)
+function Notifications:AnimateNotification(Frame, TextLabel, Duration)
     -- Slide In
-    local TweenIn = TweenService:Create(Frame, TweenInfo.new(TweenTime, TweenStyle, TweenDirection), {
-        BackgroundTransparency = 0
+    local SlideIn = TweenService:Create(Frame, TweenInfo.new(TweenTime, TweenStyle, TweenDirection), {
+        Position = UDim2.new(1, 0, 0, 0) -- Move into the container
     })
-    TweenIn:Play()
-
-    -- Fade In Text
-    TweenService:Create(TextLabel, TweenInfo.new(0.5, TweenStyle, TweenDirection), {TextTransparency = 0}):Play()
+    SlideIn:Play()
 
     -- Wait, then Slide Out to the Right and Fade
     task.wait(Duration or 4)
-    local FadeOutTween = TweenService:Create(Frame, TweenInfo.new(0.5, TweenStyle, TweenDirection), {
-        BackgroundTransparency = 1,
-        Position = UDim2.new(2, 0, Frame.Position.Y.Scale, Frame.Position.Y.Offset) -- Slide out to the right
+    local SlideOut = TweenService:Create(Frame, TweenInfo.new(0.5, TweenStyle, TweenDirection), {
+        Position = UDim2.new(2, 0, Frame.Position.Y.Scale, Frame.Position.Y.Offset), -- Move off-screen to the right
+        BackgroundTransparency = 1 -- Fade out
     })
-    local TextFadeTween = TweenService:Create(TextLabel, TweenInfo.new(0.5, TweenStyle, TweenDirection), {TextTransparency = 1})
-    FadeOutTween:Play()
-    TextFadeTween:Play()
+    local TextFadeOut = TweenService:Create(TextLabel, TweenInfo.new(0.5, TweenStyle, TweenDirection), {TextTransparency = 1})
+    SlideOut:Play()
+    TextFadeOut:Play()
 
     -- Cleanup
-    FadeOutTween.Completed:Wait()
+    SlideOut.Completed:Wait()
     Frame:Destroy()
-    table.remove(NotificationsList, table.find(NotificationsList, Frame))
+    table.remove(NotificationQueue, table.find(NotificationQueue, Frame))
 end
 
--- Add Notification Function
-function Notifications.Notify(Properties)
-    local Text = Properties.Text or "Notification"
-    local Duration = Properties.Duration or 5
-    local ImageId = Properties.ImageId
-
-    local Notification, TextLabel = CreateNotification(Text, Duration, ImageId)
-    table.insert(NotificationsList, Notification)
-    coroutine.wrap(AnimateNotification)(Notification, TextLabel, Duration)
+-- Add Notification
+function Notifications:Notify(Properties)
+    local Frame, TextLabel = self:CreateNotification(Properties)
+    table.insert(NotificationQueue, Frame)
+    coroutine.wrap(function()
+        self:AnimateNotification(Frame, TextLabel, Properties.Duration)
+    end)()
 end
 
+-- Return Library
 return Notifications
