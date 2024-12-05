@@ -2,6 +2,7 @@ local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Backlostunking/ScriptStarOZX/refs/heads/main/Notification%5B%5DStarlightM.Lua"))()
 
 -- GUI Elements
 local ScreenGui = Instance.new("ScreenGui")
@@ -97,7 +98,7 @@ local function fireClickDetector(part)
     if clickDetector then
         clickDetector.MouseClick:Fire(LocalPlayer)
     else
-        warn("No ClickDetector found on " .. part.Name)
+AddXNotification("No ClickDetector found on " .. part.Name)
     end
 end
 
@@ -108,7 +109,7 @@ local function fireProximityPrompt(part)
         task.wait(1) -- Simulate holding
         prompt:InputHoldEnd()
     else
-        warn("No ProximityPrompt found on " .. part.Name)
+AddXNotification("No ProximityPrompt found on " .. part.Name)
     end
 end
 
@@ -126,9 +127,9 @@ local function copyFireScript(part)
             partPath, partPath, partPath
         )
         setclipboard(fireScript)
-        warn("Copied fire script to clipboard!")
+AddXNotification("Copied fire script to clipboard!")
     else
-        warn("No part selected!")
+AddXNotification("No part selected!")
     end
 end
 
@@ -143,15 +144,15 @@ end)
 
 -- Create Buttons
 createButton(ButtonContainer, "Fire ClickDetector", function()
-    if selectedPart then fireClickDetector(selectedPart) else warn("No part selected!") end
+    if selectedPart then fireClickDetector(selectedPart) else AddXNotification("No part selected!") end
 end)
 
 createButton(ButtonContainer, "Fire ProximityPrompt", function()
-    if selectedPart then fireProximityPrompt(selectedPart) else warn("No part selected!") end
+    if selectedPart then fireProximityPrompt(selectedPart) else AddXNotification("No part selected!") end
 end)
 
 createButton(ButtonContainer, "Fire TouchInterest", function()
-    if selectedPart then fireTouchInterest(selectedPart) else warn("No part selected!") end
+    if selectedPart then fireTouchInterest(selectedPart) else AddXNotification("No part selected!") end
 end)
 
 createButton(ButtonContainer, "Test All Interactions", function()
@@ -160,16 +161,16 @@ createButton(ButtonContainer, "Test All Interactions", function()
         fireProximityPrompt(selectedPart)
         fireTouchInterest(selectedPart)
     else
-        warn("No part selected!")
+        AddXNotification("No part selected!")
     end
 end)
 
 createButton(ButtonContainer, "Copy Part Info", function()
     if selectedPart then
         setclipboard(selectedPart:GetFullName())
-        warn("Copied part path: " .. selectedPart:GetFullName())
+AddXNotification("Copied part path: " .. selectedPart:GetFullName())
     else
-        warn("No part selected!")
+        AddXNotification("No part selected!")
     end
 end)
 
