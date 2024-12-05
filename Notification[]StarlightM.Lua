@@ -1,4 +1,7 @@
--- how to used: AddXNotification("Hello")
+--[[
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Backlostunking/ScriptStarOZX/refs/heads/main/Notification%5B%5DStarlightM.Lua"))()
+how to used: AddXNotification("Hello")
+--]]
 -- Variables
 local TweenService = game:GetService("TweenService")
 
