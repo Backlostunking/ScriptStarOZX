@@ -1,6 +1,7 @@
 --[[
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Backlostunking/ScriptStarOZX/refs/heads/main/Notification%5B%5DStarlightM.Lua"))()
 Usage: AddXNotification("Hello, This is a Notification!")
+AddXNotification("notification with duration", 3)
 --]]
 
 -- Variables
@@ -44,7 +45,9 @@ local function createNotificationUI()
 end
 
 -- Fade-In and Fade-Out Animation
-function AddXNotification(text)
+function AddXNotification(text,duration)
+    duration = duration or 2 -- Default duration is 2 seconds
+
     -- Create Notification UI
     local screenGui, NotificationFrame, NotificationLabel = createNotificationUI()
     screenGui.Parent = game.CoreGui
@@ -64,8 +67,8 @@ function AddXNotification(text)
     fadeInText:Play()
     fadeInFrame.Completed:Wait()
 
-    -- Display for a few seconds
-    task.wait(2)
+    -- Display for the specified duration
+    task.wait(duration)
 
     -- Fade-Out Animation
     local fadeOutFrame = TweenService:Create(NotificationFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
