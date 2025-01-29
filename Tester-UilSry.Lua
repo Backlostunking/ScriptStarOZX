@@ -1,24 +1,26 @@
 local UILibrary = {}
 
+local UIS = game:GetService("UserInputService")
+
 -- Create a Draggable Window
 function UILibrary:CreateWindow(title)
     local ScreenGui = Instance.new("ScreenGui")
     local MainFrame = Instance.new("Frame")
     local TitleLabel = Instance.new("TextLabel")
     local CloseButton = Instance.new("TextButton")
-    
+    local Container = Instance.new("ScrollingFrame") -- SCROLLABLE CONTAINER!
+    local UIListLayout = Instance.new("UIListLayout")
+
     ScreenGui.Parent = game.CoreGui
     MainFrame.Parent = ScreenGui
     MainFrame.Size = UDim2.new(0, 400, 0, 300)
     MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
     MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     MainFrame.Active = true
-    MainFrame.Draggable = true -- Makes the UI Movable (PC Only)
+    MainFrame.Draggable = true -- PC Dragging
 
-    -- Add Mobile Dragging
-    local UIS = game:GetService("UserInputService")
+    -- Mobile Dragging Support
     local dragging, dragInput, startPos, dragStart
-
     MainFrame.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
@@ -46,7 +48,7 @@ function UILibrary:CreateWindow(title)
         end
     end)
 
-    -- Title Label
+    -- Title Bar
     TitleLabel.Parent = MainFrame
     TitleLabel.Size = UDim2.new(1, 0, 0, 30)
     TitleLabel.Text = title
@@ -62,12 +64,11 @@ function UILibrary:CreateWindow(title)
     CloseButton.Text = "X"
     CloseButton.TextColor3 = Color3.new(1, 1, 1)
     CloseButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-
     CloseButton.MouseButton1Click:Connect(function()
         ScreenGui:Destroy()
     end)
 
-    -- UI Toggle Keybind (H to Show/Hide UI)
+    -- UI Toggle (Press "H")
     local isVisible = true
     UIS.InputBegan:Connect(function(input)
         if input.KeyCode == Enum.KeyCode.H then
@@ -76,15 +77,31 @@ function UILibrary:CreateWindow(title)
         end
     end)
 
-    return MainFrame
+    -- SCROLLING FRAME (Handles Overflow)
+    Container.Parent = MainFrame
+    Container.Size = UDim2.new(1, 0, 1, -40)
+    Container.Position = UDim2.new(0, 0, 0, 40)
+    Container.BackgroundTransparency = 1
+    Container.CanvasSize = UDim2.new(0, 0, 0, 0)
+    Container.ScrollBarThickness = 6
+
+    -- Auto Layout (Stack UI elements)
+    UIListLayout.Parent = Container
+    UIListLayout.Padding = UDim.new(0, 10)
+
+    -- Auto-Adjust Scroll Size
+    UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        Container.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + 10)
+    end)
+
+    return Container
 end
 
 -- Create a Button
 function UILibrary:CreateButton(parent, text, callback)
     local Button = Instance.new("TextButton")
     Button.Parent = parent
-    Button.Size = UDim2.new(0, 150, 0, 40)
-    Button.Position = UDim2.new(0.5, -75, 0, 50)
+    Button.Size = UDim2.new(0.9, 0, 0, 40)
     Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     Button.TextColor3 = Color3.new(1, 1, 1)
     Button.Font = Enum.Font.SourceSansBold
@@ -98,12 +115,11 @@ function UILibrary:CreateButton(parent, text, callback)
     return Button
 end
 
--- Create a Toggle Button
+-- Create a Toggle
 function UILibrary:CreateToggle(parent, text, callback)
     local Toggle = Instance.new("TextButton")
     Toggle.Parent = parent
-    Toggle.Size = UDim2.new(0, 150, 0, 40)
-    Toggle.Position = UDim2.new(0.5, -75, 0, 100)
+    Toggle.Size = UDim2.new(0.9, 0, 0, 40)
     Toggle.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     Toggle.TextColor3 = Color3.new(1, 1, 1)
     Toggle.Font = Enum.Font.SourceSansBold
@@ -120,43 +136,54 @@ function UILibrary:CreateToggle(parent, text, callback)
     return Toggle
 end
 
--- Create Notification System
-function UILibrary:CreateNotification(message, duration)
-    local ScreenGui = Instance.new("ScreenGui")
-    local NotificationFrame = Instance.new("Frame")
-    local TextLabel = Instance.new("TextLabel")
+-- Create a Slider
+function UILibrary:CreateSlider(parent, text, min, max, default, callback)
+    local SliderFrame = Instance.new("Frame")
+    local SliderLabel = Instance.new("TextLabel")
+    local Slider = Instance.new("TextButton")
 
-    ScreenGui.Parent = game.CoreGui
-    NotificationFrame.Parent = ScreenGui
-    NotificationFrame.Size = UDim2.new(0, 300, 0, 50)
-    NotificationFrame.Position = UDim2.new(1, -310, 1, -60)
-    NotificationFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    
-    TextLabel.Parent = NotificationFrame
-    TextLabel.Size = UDim2.new(1, 0, 1, 0)
-    TextLabel.Text = message
-    TextLabel.TextColor3 = Color3.new(1, 1, 1)
-    TextLabel.TextSize = 14
-    TextLabel.BackgroundTransparency = 1
+    SliderFrame.Parent = parent
+    SliderFrame.Size = UDim2.new(0.9, 0, 0, 40)
+    SliderFrame.BackgroundTransparency = 1
 
-    -- Slide in animation
-    NotificationFrame:TweenPosition(
-        UDim2.new(1, -310, 1, -110),
-        Enum.EasingDirection.Out,
-        Enum.EasingStyle.Quad,
-        0.5,
-        true
-    )
+    SliderLabel.Parent = SliderFrame
+    SliderLabel.Size = UDim2.new(1, 0, 0, 20)
+    SliderLabel.Text = text .. ": " .. default
+    SliderLabel.TextColor3 = Color3.new(1, 1, 1)
+    SliderLabel.TextSize = 14
+    SliderLabel.BackgroundTransparency = 1
 
-    task.wait(duration or 3)
+    Slider.Parent = SliderFrame
+    Slider.Size = UDim2.new(0.9, 0, 0, 20)
+    Slider.Position = UDim2.new(0.05, 0, 0.5, 0)
+    Slider.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Slider.Text = ""
 
-    -- Fade out animation
-    for i = 1, 10 do
-        NotificationFrame.BackgroundTransparency = NotificationFrame.BackgroundTransparency + 0.1
-        task.wait(0.05)
-    end
+    Slider.MouseButton1Click:Connect(function()
+        local newValue = math.random(min, max)
+        SliderLabel.Text = text .. ": " .. newValue
+        callback(newValue)
+    end)
 
-    NotificationFrame:Destroy()
+    return SliderFrame
+end
+
+-- Create a Textbox
+function UILibrary:CreateTextbox(parent, placeholder, callback)
+    local TextBox = Instance.new("TextBox")
+    TextBox.Parent = parent
+    TextBox.Size = UDim2.new(0.9, 0, 0, 40)
+    TextBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    TextBox.TextColor3 = Color3.new(1, 1, 1)
+    TextBox.Font = Enum.Font.SourceSansBold
+    TextBox.TextSize = 16
+    TextBox.PlaceholderText = placeholder
+
+    TextBox.FocusLost:Connect(function()
+        callback(TextBox.Text)
+    end)
+
+    return TextBox
 end
 
 return UILibrary
