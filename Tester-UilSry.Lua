@@ -1,6 +1,6 @@
--- UI Library Base
 local UILibrary = {}
 
+-- Create a draggable window
 function UILibrary:CreateWindow(title)
     local ScreenGui = Instance.new("ScreenGui")
     local MainFrame = Instance.new("Frame")
@@ -35,11 +35,8 @@ function UILibrary:CreateWindow(title)
     return MainFrame
 end
 
-return UILibrary
-
-local ButtonModule = {}
-
-function ButtonModule:Create(parent, text, callback)
+-- Create a button
+function UILibrary:CreateButton(parent, text, callback)
     local Button = Instance.new("TextButton")
     Button.Parent = parent
     Button.Size = UDim2.new(0, 150, 0, 40)
@@ -57,11 +54,8 @@ function ButtonModule:Create(parent, text, callback)
     return Button
 end
 
-return ButtonModule
-
-local ToggleModule = {}
-
-function ToggleModule:Create(parent, text, callback)
+-- Create a toggle button
+function UILibrary:CreateToggle(parent, text, callback)
     local Toggle = Instance.new("TextButton")
     Toggle.Parent = parent
     Toggle.Size = UDim2.new(0, 150, 0, 40)
@@ -82,4 +76,5 @@ function ToggleModule:Create(parent, text, callback)
     return Toggle
 end
 
-return ToggleModule
+-- Return the library
+return UILibrary
