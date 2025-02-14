@@ -2,7 +2,6 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
-local AbilityUsed = ReplicatedStorage.Packages.Knit.Services.AbilityService.RE.AbilityUsed
 local AbilityEvent = ReplicatedStorage.Packages.Knit.Services.AbilityService.RE.Ability
 
 local AbilityButton = LocalPlayer.PlayerGui.InGameUI.Bottom.Abilities["2"]
