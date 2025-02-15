@@ -3,11 +3,9 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
 local AbilityEvent = ReplicatedStorage.Packages.Knit.Services.AbilityService.RE.Ability
-
 local AbilityButton = LocalPlayer.PlayerGui.InGameUI.Bottom.Abilities["2"]
-
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Backlostunking/ScriptStarOZX/refs/heads/main/Notification%5B%5DStarlightM.Lua"))()
 if getgenv().ChangeStyle and LocalPlayer.PlayerStats.Style.Value == "Reo" then LocalPlayer.PlayerStats.Style.Value = "Kunigami" end
-
 local function getNearestPlayer(maxDistance)
     local closestPlayer = nil
     local shortestDistance = maxDistance
@@ -24,7 +22,6 @@ local function getNearestPlayer(maxDistance)
             end
         end
     end
-
     return closestPlayer
 end
 local function activateAbility()
@@ -122,3 +119,4 @@ end)
 end
 end)
 end
+AddXNotification("Script Made By ScripterMrbacon")
