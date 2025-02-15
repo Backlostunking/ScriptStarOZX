@@ -1,3 +1,15 @@
+--[[
+Use;
+-- This Requires to have style Reo or Kunigami to use and work!
+getgenv().ChangeStyle = true -- set this to false if you don't need to change your style to Kunigami (use Reo style to change)
+getgenv().NoCD = true -- set this to false if you don't want the Body block no cd (reset the button click function modified)
+getgenv().IsHitTeam = true -- set this to false if you don't want to Hit your Team with Body block
+getgenv().ReachHit = 30 -- you can set how much reach for use bodyblock if you need, normal is 30 or more
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Backlostunking/ScriptStarOZX/refs/heads/main/Blue_lock_rivals_NoCoolDownBodyBlock.Lua"))()
+and if you run like this is will work?
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Backlostunking/ScriptStarOZX/refs/heads/main/Blue_lock_rivals_NoCoolDownBodyBlock.Lua"))()
+yes is still work and it will be normal settings
+--]]
 -- Yo dude good to see you bro! you can steal the code i made btw this is very basic and i don't want so you can have it or edit it don't thanks to me yet good luck with your skills of scripter coding i happy to see you level up just like me! ❤️🔥
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -5,11 +17,14 @@ local LocalPlayer = Players.LocalPlayer
 local AbilityEvent = ReplicatedStorage.Packages.Knit.Services.AbilityService.RE.Ability
 local AbilityButton = LocalPlayer.PlayerGui.InGameUI.Bottom.Abilities["2"]
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Backlostunking/ScriptStarOZX/refs/heads/main/Notification%5B%5DStarlightM.Lua"))()
+if getgenv().ChangeStyle == nil then getgenv().ChangeStyle = true end
+if getgenv().NoCD == nil then getgenv().NoCD = true end
+if getgenv().IsHitTeam == nil then getgenv().IsHitTeam = true end
+if getgenv().ReachHit == nil then getgenv().ReachHit = 30 end
 if getgenv().ChangeStyle and LocalPlayer.PlayerStats.Style.Value == "Reo" then LocalPlayer.PlayerStats.Style.Value = "Kunigami" end
 local function getNearestPlayer(maxDistance)
     local closestPlayer = nil
     local shortestDistance = maxDistance
-
     for _, player in pairs(Players:GetPlayers()) do
         if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
             if not getgenv().IsHitTeam and player.Team == LocalPlayer.Team then
@@ -26,7 +41,7 @@ local function getNearestPlayer(maxDistance)
 end
 local function activateAbility()
 if getgenv().NoCD then
-    local targetPlayer = getNearestPlayer(30)
+    local targetPlayer = getNearestPlayer(getgenv().ReachHit)
     if targetPlayer then
         AbilityEvent:FireServer("BodyBlock", targetPlayer.Character)
     end
