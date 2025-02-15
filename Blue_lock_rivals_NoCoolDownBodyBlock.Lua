@@ -134,4 +134,83 @@ end)
 end
 end)
 end
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "KsUi"
+ScreenGui.Parent = game.CoreGui
+local ks = Instance.new("TextButton")
+ks.Name = "ks"
+ks.Parent = ScreenGui
+ks.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ks.Position = UDim2.new(0.1, 0, 0.1, 0)
+ks.Size = UDim2.new(0, 56, 0, 25)
+ks.Font = Enum.Font.SourceSans
+ks.Text = "Kill Server"
+ks.TextColor3 = Color3.fromRGB(248, 248, 248)
+ks.TextSize = 15
+ks.AutoButtonColor = true -- Better button effect
+ks.BorderSizePixel = 2
+ks.BorderColor3 = Color3.fromRGB(255, 0, 0)
+local Corner = Instance.new("UICorner")
+Corner.Name = "Corner"
+Corner.Parent = ks
+local UserInputService = game:GetService("UserInputService")
+local dragging, dragInput, dragStart, startPos
+ks.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = ks.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+ks.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        ks.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
+ks.MouseButton1Click:Connect(function()
+    local bindableFunction = Instance.new("BindableFunction")
+    bindableFunction.OnInvoke = function(choice)
+        if choice == "Sure" then
+            getgenv().unknow = true
+            while getgenv().unknow do
+                task.wait()
+                pcall(function()
+                    task.spawn(function()
+                        for _, v in pairs(game.Players:GetChildren()) do
+                            if v ~= game.Players.LocalPlayer and v.Character then
+                                for _ = 1, 20 do
+                                    local args = {
+                                        [1] = "BodyBlock",
+                                        [2] = v.Character
+                                      }
+                                        AbilityEvent:FireServer(unpack(args))
+                                      end
+                                 end
+                            end
+                      end)
+                end)
+             end
+          end
+      end
+        game.StarterGui:SetCore("SendNotification", {
+            Title    = "Kill Server",
+            Text     = "Click 'Sure' if you want to Kill Server (Reo Style or Kunigami Required)!",
+            Icon     = "",
+            Duration = 25,
+            Callback = bindableFunction,
+            Button1  = "Sure",
+            Button2  = "No",
+        })
+    end)
 AddXNotification("Script Made By ScripterMrbacon")
