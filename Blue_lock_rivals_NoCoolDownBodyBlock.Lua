@@ -50,6 +50,48 @@ end
 if AbilityButton then
  AbilityButton.MouseButton1Click:Connect(activateAbility)
 end
+if LocalPlayer.PlayerGui.InGameUI.Bottom.Abilities:FindFirstChild("BodyBlockGK") == nil then
+local BodyBlockAllButton = AbilityButton:Clone()
+BodyBlockAllButton.Parent = AbilityButton.Parent
+BodyBlockAllButton.Name = "BodyBlockGK"
+BodyBlockAllButton.Timer.Text = "Body Block GK"
+BodyBlockAllButton.Position = AbilityButton.Position + UDim2.new(0, 0, 0.15, 0)
+BodyBlockAllButton.MouseEnter:Connect(function()
+local Sound = Instance.new("Sound")
+Sound.Parent = BodyBlockAllButton
+Sound.SoundId = "rbxassetid://10066931761"
+Sound.Volume = 0.93
+Sound.Looped = false
+Sound:Play()
+Sound.Ended:Connect(function()
+    Sound:Destroy()
+end)
+BodyBlockAllButton:TweenSize(UDim2.new(1.035, 0, 1.035, 0), "Out", "Quad", 0.2, true)
+end)
+BodyBlockAllButton.MouseLeave:Connect(function()
+    BodyBlockAllButton:TweenSize(UDim2.new(0.9, 0, 0.9, 0), "Out", "Quad", 0.2, true)
+end)
+BodyBlockAllButton.MouseButton1Click:Connect(function()
+local Sound = Instance.new("Sound")
+Sound.Parent = LocalPlayer:FindFirstChildWhichIsA("PlayerGui")
+Sound.SoundId = "rbxassetid://10066968815"
+Sound.Volume = 1.3
+Sound.Looped = false
+Sound:Play()
+Sound.Ended:Connect(function()
+    Sound:Destroy()
+end)
+for i, v in pairs(game.Players:GetChildren()) do
+if v ~= LocalPlayer and v.Team ~= LocalPlayer.Team and v.Character and v.Character:FindFirstChild("Values") and v.Character.Values.Goalie.Value then
+     local args = {
+      [1] = "BodyBlock",
+      [2] = v.Character
+      }
+       AbilityEvent:FireServer(unpack(args))
+    end
+end
+end)
+end
 if LocalPlayer.PlayerGui.InGameUI.Bottom.Abilities:FindFirstChild("BodyBlockAll") == nil then
 local BodyBlockAllButton = AbilityButton:Clone()
 BodyBlockAllButton.Parent = AbilityButton.Parent
@@ -207,10 +249,19 @@ ks.MouseButton1Click:Connect(function()
             Title    = "Kill Server",
             Text     = "Click 'Sure' if you want to Kill Server (Reo Style or Kunigami Required)!",
             Icon     = "",
-            Duration = 25,
+            Duration = 10,
             Callback = bindableFunction,
             Button1  = "Sure",
             Button2  = "No",
         })
     end)
+game.StarterGui:SetCore("SendNotification", {
+            Title    = "Script notification!",
+            Text     = "please send a message to discord server if script is not work anymore or bug!",
+            Icon     = "",
+            Duration = 50,
+            Button1  = "Okay!",
+        })
 AddXNotification("Script Made By ScripterMrbacon")
+task.wait(1)
+AddXNotification("Body Block GK Script Request by @tainyshinymad")
