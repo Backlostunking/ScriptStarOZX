@@ -11,9 +11,9 @@ local TweenService = game:GetService("TweenService")
 local function createNotificationUI()
     -- ScreenGui
     local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "NotificationTest"
+    screenGui.Name = "WxNotification"
     screenGui.ResetOnSpawn = false
-
+    screenGui.DisplayOrder = math.huge
     -- Frame (Notification Container)
     local frame = Instance.new("Frame", screenGui)
     frame.Size = UDim2.new(0.2, 10, 0.1, 10) -- Slim and compact
@@ -26,7 +26,7 @@ local function createNotificationUI()
 
     -- Rounded Corners
     local corner = Instance.new("UICorner", frame)
-    corner.CornerRadius = UDim.new(1, 0) -- Full rounded edges
+    corner.CornerRadius = UDim.new(0.8, 0) -- Full rounded edges
 
     -- Text Label (Message)
     local textLabel = Instance.new("TextLabel", frame)
@@ -37,7 +37,7 @@ local function createNotificationUI()
     textLabel.Text = ""
     textLabel.TextColor3 = Color3.new(0, 0, 0) -- Black text
     textLabel.Font = Enum.Font.GothamBold
-    textLabel.TextSize = 20 -- Smaller text for compact look
+    textLabel.TextSize = 19.00 -- Smaller text for compact look
     textLabel.TextScaled = false
     textLabel.TextWrapped = true -- Wraps long text within the container
 
@@ -50,7 +50,7 @@ function AddXNotification(text,duration)
 
     -- Create Notification UI
     local screenGui, NotificationFrame, NotificationLabel = createNotificationUI()
-    screenGui.Parent = game.CoreGui
+    screenGui.Parent = gethui() or game.CoreGui
 
     -- Set Text
     NotificationLabel.Text = text
