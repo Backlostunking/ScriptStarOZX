@@ -7,7 +7,7 @@ local gui = guiParent:FindFirstChild("DarkNotiGui") or Instance.new("ScreenGui",
 gui.Name = "DarkNotiGui"
 gui.DisplayOrder = math.huge
 _G.notificationStack = _G.notificationStack or {}
-local function createNotification(title, message, duration)
+function createNotification(title, message, duration)
     duration = duration or 5
     local notiFrame = Instance.new("Frame")
     notiFrame.Size = UDim2.new(0, 270, 0, 70)
