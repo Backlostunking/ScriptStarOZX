@@ -131,7 +131,7 @@ TweenService:Create(timeBar, TweenInfo.new(duration, Enum.EasingStyle.Linear), {
         end
     end
     if not otherClosing then
-        task.wait(0.1) -- Ensures smooth transition
+        task.wait(0.1)
         for i, data in ipairs(_G.notificationStack) do
             local frame = data.frame
             local targetPosition = UDim2.new(1, -280, 1, -130 - ((i - 1) * 80))
