@@ -1,8 +1,10 @@
 -- feel free to modify or edit and you can save it too i happy to see you, happy coding bro ❤️
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Backlostunking/ScriptStarOZX/refs/heads/main/IfXDarkNotification.Lua"))()
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local LocalPlayer = Players.LocalPlayer
+local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
 local isUsingPosition = true
 local guiParent
 if gethui then
@@ -15,6 +17,7 @@ end
 if guiParent:FindFirstChild("DarkPositionGui") then
     guiParent:FindFirstChild("DarkPositionGui"):Destroy()
 end
+if not setclipboard then createNotification("Missing function", "Your Executor Not support setclipboard!") end
 local gui = Instance.new("ScreenGui")
 gui.Name = "DarkPositionGui"
 gui.Parent = guiParent
@@ -91,7 +94,6 @@ local function createButton(name, position, callback)
     return button
 end
 createButton("Check", UDim2.new(0.05, 0, 0.42, 0), function()
-    local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if root then
         if isUsingPosition then
             posBox.Text = string.format("%.2f, %.2f, %.2f", root.Position.X, root.Position.Y, root.Position.Z)
@@ -101,7 +103,6 @@ createButton("Check", UDim2.new(0.05, 0, 0.42, 0), function()
     end
 end)
 createButton("Teleport", UDim2.new(0.55, 0, 0.42, 0), function()
-    local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if root then
         root.CFrame = CFrame.new(loadstring("return " .. posBox.Text)())
     end
@@ -109,10 +110,16 @@ end)
 createButton("Copy", UDim2.new(0.05, 0, 0.57, 0), function()
     if setclipboard then
         setclipboard(posBox.Text)
+createNotification("Notification", "Copy To Clipboard!",2)
+else
+createNotification("Missing function", "Your Executor not support setclipboard")
     end
 end)
 createButton("Copy With TP", UDim2.new(0.55, 0, 0.57, 0), function()
     if setclipboard then setclipboard("game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(" .. posBox.Text .. ")")
+createNotification("Notification", "Copy To Clipboard!",2)
+else
+createNotification("Missing function", "Your Executor not support setclipboard")
     end
 end)
 local toggleButton = Instance.new("TextButton")
@@ -129,13 +136,17 @@ uiCornerToggle.CornerRadius = UDim.new(0, 5)
 uiCornerToggle.Parent = toggleButton
 toggleButton.MouseButton1Click:Connect(function()
     isUsingPosition = not isUsingPosition
+if root then
     if isUsingPosition then
         toggleButton.Text = "Value: Position"
+posBox.Text = string.format("%.2f, %.2f, %.2f", root.Position.X, root.Position.Y, root.Position.Z)
     else
         toggleButton.Text = "Value: CFrame"
+posBox.Text = tostring(root.CFrame)
+      end
     end
 end)
-TweenService:Create(frame, TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+TweenService:Create(frame, TweenInfo.new(0.6, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
     Size = UDim2.new(0.4, 0, 0.55, 0),
     Position = UDim2.new(0.3, 0, 0.2, 0),
     BackgroundTransparency = 0
@@ -168,3 +179,4 @@ UserInputService.InputChanged:Connect(function(input)
         updateDrag(input)
     end
 end)
+createNotification("Notification", "Script Made by ScripterMrbacon")
