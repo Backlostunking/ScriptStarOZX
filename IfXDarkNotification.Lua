@@ -1,4 +1,9 @@
 -- feel free to modify or edit this and you can save it, i make it like 5 hours, but enjoy if this is a good notification ❤️
+--[[
+here if need to use it!
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Backlostunking/ScriptStarOZX/refs/heads/main/IfXDarkNotification.Lua"))()
+createNotification("Title", "message", 5) -- the number is duration enjoy ❤️
+]]
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
