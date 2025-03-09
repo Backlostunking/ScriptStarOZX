@@ -145,4 +145,5 @@ if duration > 0 then
         end
     end)
   end
+return createNotification
 end
