@@ -1,2 +1,1 @@
-Get The Script if you want it
-Made with ❤️🔥
+* This is not open source code yet, it a free script that by ScripterMrbacon so it a basically made with ❤️
