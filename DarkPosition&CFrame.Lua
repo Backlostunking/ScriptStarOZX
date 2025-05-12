@@ -1,37 +1,52 @@
--- feel free to modify or edit and you can save it too i happy to see you, happy coding bro ❤️
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Backlostunking/ScriptStarOZX/refs/heads/main/IfXDarkNotification.Lua"))()
-local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
-local LocalPlayer = Players.LocalPlayer
-local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+-- feel free to modify or edit this. i happy to see you, so happy coding bro ❤️
+(loadstring or load)(game:HttpGet("https://raw.githubusercontent.com/Backlostunking/ScriptStarOZX/refs/heads/main/IfXDarkNotification.Lua"))()
+local function GetSafeService(service)
+return (cloneref or function(s) return s end)(game:GetService(service))
+end
+local Players = GetSafeService("Players")
+local CoreGui = GetSafeService("CoreGui")
+local UserInputService = GetSafeService("UserInputService")
+local TweenService = GetSafeService("TweenService")
+local LocalPlayer = Players.LocalPlayer or Players:GetPropertyChangedSignal("LocalPlayer"):Wait() or Players.localPlayer
+local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid") and LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid").RootPart or LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+local copy = setclipboard or toclipboard
 local isUsingPosition = true
 local guiParent
 if gethui then
     guiParent = gethui()
-elseif syn and syn.protect_gui then
-    guiParent = game:GetService("CoreGui")
+elseif CoreGui:FindFirstChild("RobloxGui") then
+    guiParent = CoreGui:FindFirstChild("RobloxGui")
+elseif CoreGui then
+    guiParent = CoreGui
 else
-    guiParent = LocalPlayer:FindFirstChild("PlayerGui") or LocalPlayer:WaitForChild("PlayerGui")
+    guiParent = LocalPlayer:FindFirstChildWhichIsA("PlayerGui")
 end
 if guiParent:FindFirstChild("DarkPositionGui") then
     guiParent:FindFirstChild("DarkPositionGui"):Destroy()
 end
-if not setclipboard then createNotification("Missing function", "Your Executor Not support setclipboard!") end
 local gui = Instance.new("ScreenGui")
+local frame = Instance.new("Frame")
+local uiCorner = Instance.new("UICorner")
+local title = Instance.new("TextLabel")
+local posBox = Instance.new("TextLabel")
+local uiCornerBox = Instance.new("UICorner")
+local closeButton = Instance.new("TextButton")
+local UIStroke = Instance.new("UIStroke")
 gui.Name = "DarkPositionGui"
 gui.Parent = guiParent
-local frame = Instance.new("Frame")
+gui.DisplayOrder = math.huge
 frame.Size = UDim2.new(0, 0, 0, 0)
 frame.Position = UDim2.new(0.5, 0, 0.5, 0)
 frame.BackgroundTransparency = 1
 frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 frame.BorderSizePixel = 0
 frame.Parent = gui
-local uiCorner = Instance.new("UICorner")
 uiCorner.CornerRadius = UDim.new(0, 8)
 uiCorner.Parent = frame
-local title = Instance.new("TextLabel")
+UIStroke.Parent = frame
+UIStroke.Color = Color3.new(0, 0, 0)
+UIStroke.Thickness = 4
+UIStroke.Transparency = 0.4
 title.Size = UDim2.new(1, 0, 0.12, 0)
 title.BackgroundTransparency = 1
 title.Text = "Position & CFrame GUI | ScripterMrbacon"
@@ -39,7 +54,6 @@ title.TextColor3 = Color3.fromRGB(200, 200, 200)
 title.TextSize = 16
 title.Font = Enum.Font.GothamBold
 title.Parent = frame
-local posBox = Instance.new("TextLabel")
 posBox.Size = UDim2.new(0.9, 0, 0.2, 0)
 posBox.Position = UDim2.new(0.05, 0, 0.15, 0)
 posBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
@@ -49,10 +63,8 @@ posBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 posBox.Font = Enum.Font.Gotham
 posBox.TextWrapped = true
 posBox.Parent = frame
-local uiCornerBox = Instance.new("UICorner")
 uiCornerBox.CornerRadius = UDim.new(0, 5)
 uiCornerBox.Parent = posBox
-local closeButton = Instance.new("TextButton")
 closeButton.Size = UDim2.new(0.12, 0, 0.12, 0)
 closeButton.Position = UDim2.new(0.88, 0, 0, 0)
 closeButton.BackgroundTransparency = 1
@@ -64,16 +76,10 @@ closeButton.Parent = frame
 closeButton.MouseButton1Click:Connect(function()
     for _, v in pairs(frame:GetDescendants()) do
         if v:IsA("TextLabel") or v:IsA("TextButton") then
-            TweenService:Create(v, TweenInfo.new(0.8, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-                TextTransparency = 1
-            }):Play()
+            TweenService:Create(v, TweenInfo.new(0.8, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {TextTransparency = 1}):Play()
         end
     end
-    TweenService:Create(frame, TweenInfo.new(0.8, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-        Size = UDim2.new(0, 0, 0, 0),
-        Position = UDim2.new(0.5, 0, 0.5, 0),
-        BackgroundTransparency = 1
-    }):Play()
+    TweenService:Create(frame, TweenInfo.new(0.8, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Size = UDim2.new(0, 0, 0, 0),Position = UDim2.new(0.5, 0, 0.5, 0),BackgroundTransparency = 1}):Play()
     task.wait(0.4)
     gui:Destroy()
 end)
@@ -108,49 +114,37 @@ createButton("Teleport", UDim2.new(0.55, 0, 0.42, 0), function()
     end
 end)
 createButton("Copy", UDim2.new(0.05, 0, 0.57, 0), function()
-    if setclipboard then
-        setclipboard(posBox.Text)
-createNotification("Notification", "Copy To Clipboard!",2)
+    if copy then
+        copy(posBox.Text)
+createNotification("Notification", "Copy To Clipboard!", 2)
 else
-createNotification("Missing function", "Your Executor not support setclipboard")
+createNotification("Error", "Your Executor not support function to copy")
     end
 end)
 createButton("Copy With TP", UDim2.new(0.55, 0, 0.57, 0), function()
-    if setclipboard then setclipboard("game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(" .. posBox.Text .. ")")
-createNotification("Notification", "Copy To Clipboard!",2)
+    if copy then 
+copy("game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(" .. posBox.Text .. ")")
+createNotification("Notification", "Copy To Clipboard!", 2)
 else
-createNotification("Missing function", "Your Executor not support setclipboard")
+createNotification("Error", "Your Executor not support function to copy")
     end
 end)
-local toggleButton = Instance.new("TextButton")
-toggleButton.Size = UDim2.new(0.4, 0, 0.13, 0)
-toggleButton.Position = UDim2.new(0.3, 0, 0.75, 0)
-toggleButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-toggleButton.Text = "Value: Position"
-toggleButton.TextSize = 14
-toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-toggleButton.Font = Enum.Font.GothamBold
-toggleButton.Parent = frame
-local uiCornerToggle = Instance.new("UICorner")
-uiCornerToggle.CornerRadius = UDim.new(0, 5)
-uiCornerToggle.Parent = toggleButton
-toggleButton.MouseButton1Click:Connect(function()
+local valueButton
+valueButton = createButton("Value: Position", UDim2.new(0.3, 0, 0.75, 0), function()
     isUsingPosition = not isUsingPosition
-if root then
     if isUsingPosition then
-        toggleButton.Text = "Value: Position"
-posBox.Text = string.format("%.2f, %.2f, %.2f", root.Position.X, root.Position.Y, root.Position.Z)
+        valueButton.Text = "Value: Position"
+        if root then
+            posBox.Text = string.format("%.2f, %.2f, %.2f", root.Position.X, root.Position.Y, root.Position.Z)
+        end
     else
-        toggleButton.Text = "Value: CFrame"
-posBox.Text = tostring(root.CFrame)
-      end
+        valueButton.Text = "Value: CFrame"
+        if root then
+            posBox.Text = tostring(root.CFrame)
+        end
     end
 end)
-TweenService:Create(frame, TweenInfo.new(0.6, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-    Size = UDim2.new(0.4, 0, 0.55, 0),
-    Position = UDim2.new(0.3, 0, 0.2, 0),
-    BackgroundTransparency = 0
-}):Play()
+TweenService:Create(frame, TweenInfo.new(0.6, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Size = UDim2.new(0.4, 0, 0.55, 0),Position = UDim2.new(0.3, 0, 0.2, 0),BackgroundTransparency = 0}):Play()
 local dragging, dragInput, dragStart, startPos  
 local function updateDrag(input)
     local delta = input.Position - dragStart
