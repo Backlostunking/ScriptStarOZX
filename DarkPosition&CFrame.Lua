@@ -8,9 +8,13 @@ local CoreGui = GetSafeService("CoreGui")
 local UserInputService = GetSafeService("UserInputService")
 local TweenService = GetSafeService("TweenService")
 local LocalPlayer = Players.LocalPlayer or Players:GetPropertyChangedSignal("LocalPlayer"):Wait() or Players.localPlayer
-local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid") and LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid").RootPart or LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
 local copy = setclipboard or toclipboard
 local isUsingPosition = true
+local function getroot()
+local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid") and LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid").RootPart or LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+return root
+end
+local root = getroot
 local guiParent
 if gethui then
     guiParent = gethui()
@@ -100,25 +104,25 @@ local function createButton(name, position, callback)
     return button
 end
 createButton("Check", UDim2.new(0.05, 0, 0.42, 0), function()
-    if root then
+    if root() then
         if isUsingPosition then
-            posBox.Text = string.format("%.2f, %.2f, %.2f", root.Position.X, root.Position.Y, root.Position.Z)
+            posBox.Text = string.format("%.2f, %.2f, %.2f", root().Position.X, root().Position.Y, root().Position.Z)
         else
-            posBox.Text = tostring(root.CFrame)
+            posBox.Text = tostring(root().CFrame)
         end
     end
 end)
 createButton("Teleport", UDim2.new(0.55, 0, 0.42, 0), function()
-    if root then
-        root.CFrame = CFrame.new(loadstring("return " .. posBox.Text)())
-    end
+    if root() then
+        root().CFrame = CFrame.new((loadstring or load)("return " .. posBox.Text)())
+   end
 end)
 createButton("Copy", UDim2.new(0.05, 0, 0.57, 0), function()
     if copy then
         copy(posBox.Text)
-createNotification("Notification", "Copy To Clipboard!", 2)
-else
-createNotification("Error", "Your Executor not support function to copy")
+    createNotification("Notification", "Copy To Clipboard!", 2)
+   else
+    createNotification("Error", "Your Executor not support function to copy")
     end
 end)
 createButton("Copy With TP", UDim2.new(0.55, 0, 0.57, 0), function()
@@ -134,13 +138,13 @@ valueButton = createButton("Value: Position", UDim2.new(0.3, 0, 0.75, 0), functi
     isUsingPosition = not isUsingPosition
     if isUsingPosition then
         valueButton.Text = "Value: Position"
-        if root then
-            posBox.Text = string.format("%.2f, %.2f, %.2f", root.Position.X, root.Position.Y, root.Position.Z)
+        if root() then
+            posBox.Text = string.format("%.2f, %.2f, %.2f", root().Position.X, root().Position.Y, root().Position.Z)
         end
     else
         valueButton.Text = "Value: CFrame"
-        if root then
-            posBox.Text = tostring(root.CFrame)
+        if root() then
+            posBox.Text = tostring(root().CFrame)
         end
     end
 end)
