@@ -1,18 +1,51 @@
 -- feel free to modify or edit this. i happy to see you, so happy coding bro ❤️
 (loadstring or load)(game:HttpGet("https://raw.githubusercontent.com/Backlostunking/ScriptStarOZX/refs/heads/main/IfXDarkNotification.Lua"))()
-local function GetSafeService(service)
-return (cloneref or function(s) return s end)(game:GetService(service))
+local function GetSafeService(serviceName)
+    local typeof_ = typeof or type
+    local service = nil
+    if not typeof_ or typeof_(serviceName) ~= "string" then return nil end
+    if typeof_(game.FindService) == "function" then
+        local s, r = pcall(game.FindService, game, serviceName)
+        if s and r then service = r end
+    end
+    if not service and typeof_(game.GetService) == "function" then
+        local s, r = pcall(game.GetService, game, serviceName)
+        if s and r then service = r end
+    end
+    if not service and typeof_(game.FindFirstChild) == "function" then
+        local s, r = pcall(game.FindFirstChild, game, serviceName)
+        if s and r then service = r end
+    end
+    if not service then
+        local s, r = pcall(function()
+            return game[serviceName]
+        end)
+        if s and r then service = r end
+    end
+    if service and cloneref then
+        return cloneref(service)
+    end
+    return service
 end
 local Players = GetSafeService("Players")
 local CoreGui = GetSafeService("CoreGui")
 local UserInputService = GetSafeService("UserInputService")
 local TweenService = GetSafeService("TweenService")
 local LocalPlayer = Players.LocalPlayer or Players:GetPropertyChangedSignal("LocalPlayer"):Wait() or Players.localPlayer
+local valueButton
 local copy = setclipboard or toclipboard
 local isUsingPosition = true
 local function getroot()
-local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid") and LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid").RootPart or LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-return root
+local s, root = pcall(function()
+local char = LocalPlayer.Character
+if not char then return nil end
+local humanoid = char:FindFirstChildWhichIsA("Humanoid")
+if humanoid and humanoid.RootPart then
+return humanoid.RootPart
+end
+return char:FindFirstChild("HumanoidRootPart")
+end)
+return s and root or nil
 end
 local root = getroot
 local guiParent
@@ -126,14 +159,12 @@ createButton("Copy", UDim2.new(0.05, 0, 0.57, 0), function()
     end
 end)
 createButton("Copy With TP", UDim2.new(0.55, 0, 0.57, 0), function()
-    if copy then 
-copy("game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(" .. posBox.Text .. ")")
-createNotification("Notification", "Copy To Clipboard!", 2)
-else
-createNotification("Error", "Your Executor not support function to copy")
+    if copy then copy("game:GetService(\"Players\").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(" .. posBox.Text .. ")")
+       createNotification("Notification", "Copy To Clipboard!", 2)
+      else
+       createNotification("Error", "Your Executor not support function to copy")
     end
 end)
-local valueButton
 valueButton = createButton("Value: Position", UDim2.new(0.3, 0, 0.75, 0), function()
     isUsingPosition = not isUsingPosition
     if isUsingPosition then
