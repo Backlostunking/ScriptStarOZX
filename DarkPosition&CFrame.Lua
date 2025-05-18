@@ -51,8 +51,8 @@ local root = getroot
 local guiParent
 if gethui then
     guiParent = gethui()
-elseif CoreGui:FindFirstChild("RobloxGui") then
-    guiParent = CoreGui:FindFirstChild("RobloxGui")
+elseif CoreGui and CoreGui:FindFirstChild("RobloxGui") then
+    guiParent = CoreGui.RobloxGui
 elseif CoreGui then
     guiParent = CoreGui
 else
